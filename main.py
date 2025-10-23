@@ -58,16 +58,16 @@ class Main:
                     print("""
                     ╔══════════════════════════════════════════════╗
                     ║   😏 ¡La máquina ha fallado, capitán!        ║
-                    ║   💨 Su disparo se ha perdido en el mar...  ║
-                    ║   🎯 ¡Buen momento para contraatacar!       ║
+                    ║   💨 Su disparo se ha perdido en el mar...   ║
+                    ║   🎯 ¡Buen momento para contraatacar!        ║
                     ╚══════════════════════════════════════════════╝
                     """)
                 elif mensaje == "Tocado":
                     print("""
                     ╔═══════════════════════════════════════════════════════════╗
-                    ║   💀 ¡Maldición! La máquina ha dado en el blanco...      ║
-                    ║   🚢 ¡Uno de tus barcos ha sido alcanzado!               ║
-                    ║   ⚔️  Pero no te rindas, capitán... ¡Es tu turno ahora!   ║
+                    ║   💀 ¡Maldición! La máquina ha dado en el blanco...       ║
+                    ║   🚢 ¡Uno de tus barcos ha sido alcanzado!                ║
+                    ║   ⚔️  Pero no te rindas, capitán... ¡Es tu turno ahora!    ║
                     ╚═══════════════════════════════════════════════════════════╝
                     """)
                 else:
@@ -79,19 +79,19 @@ class Main:
                 if mensaje == "Agua":
                    print("""
                         ╔════════════════════════════════════════════════╗
-                        ║   💢 Ouch... ¡Impacto fallido, capitán!       ║
-                        ║   ❌ Tu disparo no ha alcanzado el blanco     ║
+                        ║   💢 Ouch... ¡Impacto fallido, capitán!        ║
+                        ║   ❌ Tu disparo no ha alcanzado el blanco      ║
                         ║   🕐 Prepárate... ahora es turno del enemigo   ║
                         ╚════════════════════════════════════════════════╝
                     """)
 
                 elif mensaje == "Repetido":
                     print("""
-                    ╔═════════════════════════════════════════════════════════╗
-                    ║   ⚠️  Coordenada repetida, comandante...                 ║
-                    ║   🧭 Ya habías lanzado un misil en ese punto.            ║
-                    ║   💣 ¡No desperdicies munición! Elige nuevas coordenadas.║
-                    ╚═════════════════════════════════════════════════════════╝
+                    ╔═══════════════════════════════════════════════════════════╗
+                    ║   ⚠️  Coordenada repetida, comandante...                   ║
+                    ║   🧭 Ya habías lanzado un misil en ese punto.             ║
+                    ║   💣 ¡No desperdicies munición! Elige nuevas coordenadas. ║
+                    ╚═══════════════════════════════════════════════════════════╝
                     """)
                 else:
                     if self.getQuienGana() == -1:
@@ -109,15 +109,15 @@ class Main:
         if quienGana == 0:
             print("""
             ╔═════════════════════════════════════════════════════╗
-            ║   💀  DERROTA...                                     ║
-            ║   La MÁQUINA ha dominado los mares.                ║
-            ║   ⚓ ¡Vuelve a intentarlo, comandante!               ║
+            ║   💀  DERROTA...                                    ║
+            ║   La MÁQUINA ha dominado los mares.                 ║
+            ║   ⚓ ¡Vuelve a intentarlo, comandante!              ║
             ╚═════════════════════════════════════════════════════╝
             """)
         else:
             print("""
             ╔═════════════════════════════════════════════════════╗
-            ║   🎉  VICTORIA ÉPICA!                                ║
+            ║   🎉  VICTORIA ÉPICA!                               ║
             ║   ¡Has hundido todos los barcos enemigos!           ║
             ║   🌊 Los mares son tuyos, capitán legendario!       ║
             ╚═════════════════════════════════════════════════════╝
