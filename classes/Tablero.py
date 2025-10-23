@@ -8,15 +8,25 @@ class Tablero:
     
 
     def __init__(self, pTabMachine, pFilas=10, pColumnas=10):
+        
+        # Constructor de la clase Tablero.
+        # Inicializa las dimensiones, la matriz del tablero ("_"), la lista de barcos colocados,
+        # la lista de coordenadas adyacentes a los barcos, e indica si es un tablero de la máquina.
+        # pTabMachine (bool): Indica si el tablero pertenece a la máquina (True) o al usuario (False).
+        
         self.filas = pFilas
         self.columnas = pColumnas
         self.tabla = np.full((pFilas,pColumnas), "_")
-        self.barcos = [] #barcos será una lista de tuplas de posiciones del barco colocado en el tablero
+        self.barcos = [] 
         self.adyacentes = []
         self.tableroMachine = pTabMachine
 
     def barcoNoPartido(self, pBarco):
-        #sacamos los pBarco[0, _] y pBarco[_,0]
+        
+        # Comprueba si las coordenadas de un barco forman un segmento recto y continuo (no "partido").
+        # Un barco debe tener coordenadas consecutivas en fila o en columna.
+        # Retorna True si el barco es válido, False en caso contrario.
+
         coordenadaFila = [pos for pos, _, in pBarco]
         coordenadaColumna = [pos for _, pos, in pBarco]
         correcto=True
@@ -34,6 +44,11 @@ class Tablero:
         return correcto
 
     def pisaOtroBarco(self, pBarco, pAutomatico):
+        
+        # Comprueba si las coordenadas del nuevo barco (`pBarco`) se solapan con algún barco ya colocado.
+        # Muestra un mensaje de error si no es colocación automática.
+        # Retorna True si hay solapamiento, False en caso contrario.
+
         letras = np.array([chr(i) for i in range(ord('A'), ord('J')+1)]).reshape(-1,1)
         pisa = False
         for curBarco in self.barcos:
@@ -47,6 +62,12 @@ class Tablero:
         return pisa
 
     def pisaAdyacente(self, pBarco, pAutomatico):
+        
+        # Comprueba si las coordenadas del nuevo barco (`pBarco`) caen en una zona adyacente a otro barco ya colocado.
+        # Los barcos no pueden tocarse ni siquiera en las esquinas.
+        # Muestra un mensaje de error si no es colocación automática.
+        # Retorna True si pisa una zona adyacente, False en caso contrario.
+        
         letras = np.array([chr(i) for i in range(ord('A'), ord('J')+1)]).reshape(-1,1)
         pisa = False
         for cordAdyacentes in self.adyacentes:
@@ -60,6 +81,35 @@ class Tablero:
             print("Error: El barco (", letras[pBarco[0][0]][0],",", pBarco[0][1], ") pisa huecos adyacentes a otro barco")
         return pisa
 
+    def generar_barco(self, eslora):        
+        # Genera un barco de una eslora dada en una posición y orientación aleatoria.
+        # Asegura que el barco quepa dentro de los límites del tablero.
+        # Retorna la lista de tuplas de coordenadas del barco propuesto.
+
+        orientacion = random.choice(["H", "V"])
+
+        if orientacion == "H":
+            fila = np.random.randint(0, self.filas)
+            col_inicio = np.random.randint(0, self.columnas - eslora + 1)
+            barco = [(fila, c) for c in range(col_inicio, col_inicio + eslora)]
+
+        else:  # orientación vertical
+            col = np.random.randint(0, self.columnas)
+            fila_inicio = np.random.randint(0, self.filas - eslora + 1)
+            barco = [(f, col) for f in range(fila_inicio, fila_inicio + eslora)]
+        return barco
+    
+    def colocar_barco(self, pBarco):
+        # Calcula y almacena en `self.adyacentes` todas las coordenadas que rodean a los barcos colocados.
+        # Esto incluye celdas en diagonal, arriba, abajo, izquierda y derecha, asegurando que no se solapen con bordes o barcos existentes.
+
+        self.barcos.append(pBarco)
+        coords = np.array(pBarco)
+        filas = coords[:, 0]
+        columnas = coords[:, 1]
+        self.tabla[filas, columnas] = "O"
+        self.rellenaAdyacentes()
+
     def rellenaAdyacentes(self):
         for curBarco in self.barcos:
             filaInicio = min([f for f, _ in curBarco])-1
@@ -72,33 +122,7 @@ class Tablero:
                     #print("analizo la coordenada: ", (f,c))
                     if not (f < 0 or c < 0 or f >= self.filas or c>=self.columnas) and (f, c) not in curBarco:
                         self.adyacentes.append((f, c))
-    
-    def colocar_barco(self, pBarco):
-        self.barcos.append(pBarco)
-        coords = np.array(pBarco)
-        filas = coords[:, 0]
-        columnas = coords[:, 1]
-        self.tabla[filas, columnas] = "O"
-        self.rellenaAdyacentes()
 
-        pass
-
-    def generar_barco(self, eslora):
-        # Elegimos orientación: 0 = horizontal, 1 = vertical
-        orientacion = random.choice(["H", "V"])
-
-        if orientacion == "H":
-            fila = np.random.randint(0, self.filas)
-            col_inicio = np.random.randint(0, self.columnas - eslora + 1)
-            barco = [(fila, c) for c in range(col_inicio, col_inicio + eslora)]
-
-        else:  # orientación vertical
-            col = np.random.randint(0, self.columnas)
-            fila_inicio = np.random.randint(0, self.filas - eslora + 1)
-            barco = [(f, col) for f in range(fila_inicio, fila_inicio + eslora)]
-
-        return barco
-    
     def rellenaTableroAleatorio(self, pDemo):
         if pDemo:
             esloras = [2]
@@ -121,7 +145,6 @@ class Tablero:
         while i < len(esloras):
             self.pintaTablero()
             
-            
             while True:
                 try:
                     strFila = input(f"Introduce la fila donde empieza tu barco de longitud {esloras[i]}: ")
@@ -134,7 +157,6 @@ class Tablero:
                 except:
                     print("Exception: Por favor, introduce una letras de A a J")
 
-
             while True:
                 try:
                     columnaInicio = int(input(f"Introduce la columna donde empieza tu barco de longitud {esloras[i]}: "))
@@ -144,7 +166,6 @@ class Tablero:
                         print(f"Por favor, introduce un número entre 0 y {self.columnas-1}")
                 except:
                     print("Por favor, introduce un número entero válido.")
-            
             
             orientacion = input("Introduce la orientación del barco [H/V]: ")
             while orientacion.upper() not in ["H", "V"]:
@@ -170,13 +191,13 @@ class Tablero:
                 self.colocar_barco(barco)
                 i += 1
 
+    def quedan_barcos(self):
+        return np.any(self.tabla == "O")
 
     def pintaTablero(self):
-            
-        # Array 1D de A a J
+        
         letras = np.array([chr(i)+"*" for i in range(ord('A'), ord('J')+1)]).reshape(-1,1)
 
-        # supongamos que espacio tiene 4 columnas
         cabecera = np.concatenate((
             np.array([" *"]),         # cabecera antes del primer tablero
             np.arange(0, 10).astype(str)
@@ -187,7 +208,6 @@ class Tablero:
             self.tabla
         ))
         
-        # Crear fila de asteriscos
         linea_guiones = np.concatenate((np.array(["**"]), np.array(["*"] * 10)))
         
         tablero_final = np.vstack((cabecera, linea_guiones, tablero_combinado))
@@ -195,6 +215,3 @@ class Tablero:
         print("\n********** TUS TABLEROS **********\n")
         for fila in tablero_final:
             print(" ".join(fila))
-
-    def quedan_barcos(self):
-        return np.any(self.tabla == "O")

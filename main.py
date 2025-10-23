@@ -5,6 +5,9 @@ from classes.Tablero import Tablero
 
 class Main:
     def __init__(self):
+        # Constructor de la clase Main.
+        # Inicializa los cuatro tableros de juego (barcos y ataques para la máquina y el usuario)
+        # y la lista de celdas ya jugadas por la máquina.
         self.tableroMachineBarcos = None
         self.tableroUsuarioBarcos = None
         self.tableroAtaquesMachine = None
@@ -12,6 +15,17 @@ class Main:
         self.celdasJugadasMaquina = None
         
     def ejecutar(self, pDemo):
+
+        # Método principal que orquesta el flujo del juego.
+        # 1. Inicializa los tableros de barcos para la máquina y el usuario.
+        # 2. Permite al usuario elegir si coloca sus barcos manualmente o de forma aleatoria.
+        # 3. Inicializa los tableros de ataques.
+        # 4. Determina quién empieza el juego al azar.
+        # 5. Entra en el bucle principal del juego, alternando turnos entre la máquina y el usuario
+        #    hasta que uno de los dos pierda todos sus barcos.
+        # 6. Al final, anuncia al ganador.
+        # pDemo (bool): Indica si se está ejecutando el modo demo (Menos barcos).
+
         ladoTablero = 10
         self.tableroMachineBarcos = Tablero(True, ladoTablero, ladoTablero)
         self.tableroMachineBarcos.rellenaTableroAleatorio(pDemo)
@@ -109,7 +123,12 @@ class Main:
             ╚═════════════════════════════════════════════════════╝
             """)
     
-    def getQuienGana(self):        
+    def getQuienGana(self):
+        # Comprueba el estado de la partida.
+        # Retorna:
+        # 1 si el usuario ha ganado (la máquina no tiene barcos).
+        # 0 si la máquina ha ganado (el usuario no tiene barcos).
+        # -1 si el juego debe continuar (ambos tienen barcos).       
         if not self.tableroMachineBarcos.quedan_barcos():
             return 1   # Gana el usuario
         elif not self.tableroUsuarioBarcos.quedan_barcos():
@@ -118,6 +137,11 @@ class Main:
             return -1  # Sigue el juego
 
     def juegaUsuario(self):
+        # Gestiona el turno de ataque del usuario.
+        # 1. Solicita al usuario la fila (letra A-J) y columna (número 0-9) para atacar, validando la entrada.
+        # 2. Comprueba el resultado del ataque en el tablero de barcos de la máquina ('tableroMachineBarcos').
+        # 3. Actualiza el tablero de ataques del usuario ('tableroAtaquesUsuario').
+        # 4. Retorna el resultado del ataque ("Tocado", "Agua", o "Repetido").
         fila = -1
         columna = -1
         while True:
@@ -154,6 +178,13 @@ class Main:
             return "Repetido"
 
     def juegaMaquina(self):
+        # Gestiona el turno de ataque de la máquina.
+        # 1. Genera coordenadas aleatorias para el ataque.
+        # 2. Se asegura de que la coordenada no haya sido atacada previamente ('celdasJugadasMaquina').
+        # 3. Registra la coordenada en 'celdasJugadasMaquina'.
+        # 4. Comprueba el resultado del ataque en el tablero de barcos del usuario ('tableroUsuarioBarcos').
+        # 5. Actualiza el tablero de ataques de la máquina ('tableroAtaquesMachine').
+        # 6. Retorna el resultado del ataque ("Tocado", "Agua", o "Repetido").
         coordAtaque = tuple(np.random.randint(0,10, size = (2)))
         while coordAtaque in self.celdasJugadasMaquina:
             coordAtaque = tuple(np.random.randint(0,10, size = (2)))
@@ -171,6 +202,13 @@ class Main:
             return "Repetido"
     
     def pintaTablero(self, pDemo, pPrimeraVez):
+
+        # Muestra los tableros del usuario en la consola.
+        # Combina el tablero de barcos del usuario y su tablero de ataques en una sola visualización.
+        # En modo demo y en el primer turno, también muestra el tablero de barcos de la máquina (trampa de la demo).
+        # pDemo (bool): Indica si está en modo demo.
+        # pPrimeraVez (bool): Indica si es la primera vez que se pinta durante la ejecución del juego.
+
         espacio = np.full((self.tableroUsuarioBarcos.filas, 4), " ")
             
         letras = np.array([chr(i)+"*" for i in range(ord('A'), ord('J')+1)]).reshape(-1,1)
