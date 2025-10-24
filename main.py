@@ -234,10 +234,23 @@ class Main:
         
         tablero_final = np.vstack((cabecera, linea_guiones, tablero_combinado))
 
+
+        color_letra = "\033[91m"  
+        reset = "\033[0m"
+        
         print("\n********** TUS TABLEROS **********\n")
         for fila in tablero_final:
-            print(" ".join(fila))        
-        
+            fila_coloreada = [
+                f"{color_letra}{celda}{reset}" if celda == "X" else celda
+                for celda in fila
+            ]
+            print(" ".join(fila_coloreada))
+
+        '''
+                print("\n********** TUS TABLEROS **********\n")
+                for fila in tablero_final:
+                    print(" ".join(fila))        
+        '''     
         if pDemo and pPrimeraVez:
             print("********** TABLERO DE LA MÁQUINA (SOLO PARA LA DEMO) ************")
             
