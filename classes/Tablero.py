@@ -100,9 +100,9 @@ class Tablero:
         return barco
     
     def colocar_barco(self, pBarco):
-        # Calcula y almacena en `self.adyacentes` todas las coordenadas que rodean a los barcos colocados.
-        # Esto incluye celdas en diagonal, arriba, abajo, izquierda y derecha, asegurando que no se solapen con bordes o barcos existentes.
-
+        # Añade un barco (`pBarco`, una lista de tuplas de coordenadas) a la lista `self.barcos`.
+        # Actualiza el tablero (`self.tabla`) marcando las coordenadas del barco con "O".
+        # Llama a `rellenaAdyacentes` para actualizar las zonas de exclusión.
         self.barcos.append(pBarco)
         coords = np.array(pBarco)
         filas = coords[:, 0]
@@ -111,6 +111,8 @@ class Tablero:
         self.rellenaAdyacentes()
 
     def rellenaAdyacentes(self):
+        # Calcula y almacena en `self.adyacentes` todas las coordenadas que rodean a los barcos colocados.
+        # Esto incluye celdas en diagonal, arriba, abajo, izquierda y derecha, asegurando que no se solapen con bordes o barcos existentes.
         for curBarco in self.barcos:
             filaInicio = min([f for f, _ in curBarco])-1
             columnaInicio = min([c for _, c in curBarco])-1
@@ -124,8 +126,11 @@ class Tablero:
                         self.adyacentes.append((f, c))
 
     def rellenaTableroAleatorio(self, pDemo):
+        # Rellena el tablero de forma automática y aleatoria con los barcos necesarios.
+        # Intenta generar y colocar cada barco hasta que se cumplan las reglas: no estar partido, no pisar otro barco, y no pisar zonas adyacentes.
+        # pDemo (bool): Usa un conjunto reducido de esloras en modo demo.
         if pDemo:
-            esloras = [2]
+            esloras = [2,3,4]
         else:
             esloras = [2,2,2,3,3,4]
         i=0
@@ -136,9 +141,14 @@ class Tablero:
                 i += 1
     
     def rellenarTableroUsuario(self, pDemo):
-        
+        # Permite al usuario colocar sus barcos manualmente.
+        # Itera sobre las esloras requeridas:
+        # 1. Pinta el tablero actual.
+        # 2. Solicita la fila, columna de inicio y orientación para el barco.
+        # 3. Valida que el barco quepa en el tablero y cumple las reglas (no partido, no pisa barco, no pisa adyacente).
+        # 4. Si es válido, lo coloca en el tablero.
         if pDemo:
-            esloras = [2]
+            esloras = [2,3,4]
         else:
             esloras = [2,2,2,3,3,4]
         i=0
@@ -192,10 +202,12 @@ class Tablero:
                 i += 1
 
     def quedan_barcos(self):
+        # Comprueba si todavía queda algún barco ("O") en el tablero.
+        # Retorna True si hay barcos, False si todos han sido hundidos ("X").
         return np.any(self.tabla == "O")
 
     def pintaTablero(self):
-        
+        # Muestra el tablero de barcos (`self.tabla`) en la consola con encabezados de coordenadas (letras para filas, números para columnas).
         letras = np.array([chr(i)+"*" for i in range(ord('A'), ord('J')+1)]).reshape(-1,1)
 
         cabecera = np.concatenate((
